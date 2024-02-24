@@ -12,7 +12,8 @@ const WS_PORT = 8080;
 const tcpServer = net.createServer();
 const websocketServer = new WebSocketServer({ port: WS_PORT });
 // new constants for task 2
-const tempThreshold = 80;
+const tempThresholdMax = 80;
+const tempThresholdMin = 20;
 const maxTime = 5000; 
 const countThreshold = 3;
 
@@ -54,12 +55,12 @@ tcpServer.on("connection", (socket) => {
     // task 2
     // store jsondata 
     // check if temperature > 80
-    if (jsonData.battery_temperature > tempThreshold) {
+    if (jsonData.battery_temperature > tempThresholdMax) {
       const currentTime = Date.now();
       if (currentTime - lastTime <= maxTime) {
         exceedTempCount++;
 
-        if (exceedTempCount > countThreshold) {
+        if (exceedTempCount > countThreshold || exceedTempCount < tempThresholdMin) {
           console.log("Error: Battery Temperature exceeded threshold more than 3 times in 5 seconds at: ", currentTime);
            // reset counters
             exceedTempCount = 0;

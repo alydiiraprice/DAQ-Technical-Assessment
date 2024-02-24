@@ -51,6 +51,9 @@ https://kentcdodds.com/blog/get-a-catch-block-error-message-with-typescript
 Breakdown of task aims:
 - add a function or refactor code in server.ts to:
     1. identify when battery temperature is > 80
+        - new note:
+            initially due to the wording, I assumed 'exceeded' meant greater than the safe range ie greater than 80
+            from context of telemetry task 3, i need to add a case for < 20 as well.
     2. track if this occurs more than 3 times in 5 seconds
     3. if 2. occurs, print the current timestamp and 'simple' (assume one-line) error message
 

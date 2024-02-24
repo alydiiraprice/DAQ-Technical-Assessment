@@ -1,6 +1,6 @@
+import { count } from "console";
 import net from "net";
 import { WebSocket, WebSocketServer } from "ws";
-// import { battery_emulator } from "telemetry/data-emulator";
 
 interface VehicleData {
   battery_temperature: number;
@@ -11,6 +11,13 @@ const TCP_PORT = 12000;
 const WS_PORT = 8080;
 const tcpServer = net.createServer();
 const websocketServer = new WebSocketServer({ port: WS_PORT });
+// new constants for task 2
+const tempThreshold = 80;
+const maxTime = 5000; 
+const countThreshold = 3;
+
+let exceedTempCount = 0;
+let lastTime = 0;
 
 // new function
 function parseData(msg: Buffer): VehicleData | null {
@@ -36,7 +43,6 @@ function parseData(msg: Buffer): VehicleData | null {
   }
 }
 
-
 tcpServer.on("connection", (socket) => {
   console.log("TCP client connected");
 
@@ -45,6 +51,31 @@ tcpServer.on("connection", (socket) => {
     // call new function to ensure jsonData is of the correct type
     const jsonData = parseData(msg);
     if (jsonData !== null) {
+    // task 2
+    // store jsondata 
+    // check if temperature > 80
+    if (jsonData.battery_temperature > tempThreshold) {
+      const currentTime = Date.now();
+      if (currentTime - lastTime <= maxTime) {
+        exceedTempCount++;
+
+        if (exceedTempCount > countThreshold) {
+          console.log("Error: Battery Temperature exceeded threshold more than 3 times in 5 seconds.");
+           // reset counters
+            exceedTempCount = 0;
+            lastTime = 0;
+        } else {
+          // time has elapsed
+          exceedTempCount = 1;
+        }
+      }
+      // update last timestamo
+      lastTime = currentTime;
+    } 
+
+    
+
+    // working : send to clients
       websocketServer.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(jsonData));

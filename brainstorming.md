@@ -15,6 +15,9 @@ Thoughts:
     - tcp or websocket issues / being unstable causing timeout
     - server incorrectly handles requests (HTTP)
     - receiving the wrong type of variable causing TS to break
+- assumption:
+    - told not to touch anything in data-emulator directory,
+    therefore, the battery_emulator function must work correctly
 
 Attempts:
 - initial run of the server using docker, it crashes immediately after the input:
@@ -34,5 +37,9 @@ Final solution:
 to be displayed on the frontend.
 
 Research:
+- understanding websockets
+https://vishalrana9915.medium.com/understanding-websockets-in-depth-6eb07ab298b3 
+- understanding tcp
+https://www.fortinet.com/resources/cyberglossary/tcp-ip#:~:text=Transmission%20Control%20Protocol%20(TCP)%20is,data%20and%20messages%20over%20networks. 
 
 ## Cloud

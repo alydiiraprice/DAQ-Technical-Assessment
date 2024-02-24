@@ -41,5 +41,10 @@ Research:
 https://vishalrana9915.medium.com/understanding-websockets-in-depth-6eb07ab298b3 
 - understanding tcp
 https://www.fortinet.com/resources/cyberglossary/tcp-ip#:~:text=Transmission%20Control%20Protocol%20(TCP)%20is,data%20and%20messages%20over%20networks. 
+- typescript throw catch errors
+https://byby.dev/ts-try-catch-error-type
+https://kentcdodds.com/blog/get-a-catch-block-error-message-with-typescript 
+- chatGPT to receive this line of code (replace part of a string): 
+    const jsonStringWithoutExtraBracket = msg.toString().replace(/}\s*$/, '');
 
 ## Cloud

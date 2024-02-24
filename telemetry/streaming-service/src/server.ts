@@ -60,7 +60,7 @@ tcpServer.on("connection", (socket) => {
         exceedTempCount++;
 
         if (exceedTempCount > countThreshold) {
-          console.log("Error: Battery Temperature exceeded threshold more than 3 times in 5 seconds.");
+          console.log("Error: Battery Temperature exceeded threshold more than 3 times in 5 seconds at: ", currentTime);
            // reset counters
             exceedTempCount = 0;
             lastTime = 0;

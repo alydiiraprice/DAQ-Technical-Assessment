@@ -12,6 +12,7 @@ interface VehicleData {
 }
 
 function App() {
+  // where is set temperature defined??
   const [temperature, setTemperature] = useState<number>(0);
   const {
     lastJsonMessage,
@@ -36,11 +37,39 @@ function App() {
   }, [readyState]);
 
   useEffect(() => {
+    // receives  object
     console.log("Received: ", lastJsonMessage);
     if (lastJsonMessage === null) {
+      // test
+      console.log("testing, received null");
       return;
     }
+    // OG: 
     setTemperature(lastJsonMessage["battery_temperature"]);
+
+    // it. 1
+    // if (typeof lastJsonMessage.battery_temperature === 'vehicleData') {
+    //   setTemperature(lastJsonMessage.battery_temperature);
+    // } else {
+    //   console.log("Invalid temperature value received");
+    // }
+
+    // it. 2
+    // if (typeof lastJsonMessage.battery_temperature === 'string') {
+    //   // Convert the string to a number
+    //   const newTemperature = parseFloat(lastJsonMessage.battery_temperature);
+      
+    //   // Check if the conversion was successful
+    //   if (!isNaN(newTemperature)) {
+    //     // Set the temperature state with the converted number
+    //     setTemperature(newTemperature);
+    //   } else {
+    //     console.log("Invalid temperature value received");
+    //   }
+    // } else {
+    //   console.log(typeof lastJsonMessage.battery_temperature);
+    //   console.log("Invalid temperature value received entirely");
+    // }
   }, [lastJsonMessage]);
 
   return (

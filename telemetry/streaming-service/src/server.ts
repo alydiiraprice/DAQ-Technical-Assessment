@@ -1,5 +1,6 @@
 import net from "net";
 import { WebSocket, WebSocketServer } from "ws";
+// import { battery_emulator } from "telemetry/data-emulator";
 
 interface VehicleData {
   battery_temperature: number;
@@ -11,22 +12,62 @@ const WS_PORT = 8080;
 const tcpServer = net.createServer();
 const websocketServer = new WebSocketServer({ port: WS_PORT });
 
+// new function
+function parseData(msg: Buffer): VehicleData | null {
+  try {
+    const jsonString = msg.toString().trim();
+    const jsonData = JSON.parse(jsonString);
+    return jsonData;
+  } catch (error) {
+    if (error instanceof SyntaxError && error.message.includes('Unexpected token }')) {
+      // Remove the extra } character and try parsing again
+      const jsonStringWithoutExtraBracket = msg.toString().replace(/}\s*$/, '');
+      try {
+        const jsonData = JSON.parse(jsonStringWithoutExtraBracket);
+        return jsonData;
+      } catch (parseError) {
+        console.error('Error parsing JSON data after removing extra bracket:', parseError);
+        return null;
+      }
+    } else {
+      console.error('Error parsing JSON data:', error);
+      return null;
+    }
+  }
+}
+
+// original
 tcpServer.on("connection", (socket) => {
   console.log("TCP client connected");
 
+  // original
+  // socket.on("data", (msg) => {
+  //   console.log(`Received: ${msg.toString()}`);
+
+  //   const jsonData: VehicleData = JSON.parse(msg.toString());
+  //   // Send JSON over WS to frontend clients
+  //   websocketServer.clients.forEach(function each(client) {
+  //     if (client.readyState === WebSocket.OPEN) {
+  //       client.send(msg.toString());
+  //     }
+  //   });
+
+  // });
+
+  // new
   socket.on("data", (msg) => {
     console.log(`Received: ${msg.toString()}`);
-
-    const jsonData: VehicleData = JSON.parse(msg.toString());
-
-    // Send JSON over WS to frontend clients
-    websocketServer.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(msg.toString());
-      }
-    });
+    const jsonData = parseData(msg);
+    if (jsonData !== null) {
+      websocketServer.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(jsonData));
+        }
+      });
+    }
   });
 
+  //
   socket.on("end", () => {
     console.log("Closing connection with the TCP client");
   });
